@@ -243,6 +243,14 @@ def setup_handlers(config: Config, cache: SubscriptionCache, llm: LLMClient) -> 
 
         _append_history(user_id, "assistant", result_md)
         await respond_with_chunks(message, result_md)
+        
+        # Дополнительное сообщение после генерации персоны
+        await message.answer(
+            "🚀 Отлично! У вас есть портрет клиента.\n\n"
+            "Теперь вы можете сформировать ценностное предложение, провести анализ рынка и ответить на все оставшиеся вопросы "
+            f"о бизнесе и персоне на платформе Креатора: {CREATOR_PLATFORM_URL}"
+        )
+        
         await state.set_state(Form.chatting)
 
     @router.message(Form.chatting, F.text)
