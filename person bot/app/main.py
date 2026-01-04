@@ -61,7 +61,6 @@ async def main() -> None:
             [
                 BotCommand(command="start", description="Начать"),
                 BotCommand(command="gen", description="Сгенерировать новую персону"),
-                BotCommand(command="check_sub", description="Проверить подписку"),
                 BotCommand(command="channel", description="Канал “В эпоху AI”"),
                 BotCommand(command="creator_app", description="Платформа Креатора"),
                 BotCommand(command="creator_site", description="Сайт Креатора"),

@@ -123,7 +123,7 @@ def setup_handlers(config: Config, cache: SubscriptionCache, llm: LLMClient) -> 
         if ok:
             _reset_history(user_id)
             await state.set_state(Form.waiting_for_brief)
-            await message.answer("Готово! Подписка подтверждена. Напишите кратко про продукт/нишу, ЦА и цель — соберу персону.")
+            await message.answer("Готово! Подписка подтверждена. Напишите кратко про продукт и целевую аудиторию")
         else:
             await message.answer(
                 "Доступ открывается после подписки на канал “В эпоху AI”. Подпишитесь и нажмите “Проверить подписку”.",
@@ -143,7 +143,7 @@ def setup_handlers(config: Config, cache: SubscriptionCache, llm: LLMClient) -> 
 
         if ok:
             await state.set_state(Form.waiting_for_brief)
-            await message.answer("Готово! Подписка подтверждена. Напишите кратко про продукт/нишу, ЦА и цель — соберу персону.")
+            await message.answer("Готово! Подписка подтверждена. Напишите кратко про продукт и целевую аудиторию")
         else:
             await message.answer(
                 "Доступ открывается после подписки на канал “В эпоху AI”. Подпишитесь и нажмите “Проверить подписку”.",
@@ -184,7 +184,7 @@ def setup_handlers(config: Config, cache: SubscriptionCache, llm: LLMClient) -> 
             await state.set_state(Form.waiting_for_brief)
             await safe_edit_text(
                 cb,
-                "Готово! Подписка подтверждена. Напишите кратко про продукт/нишу, ЦА и цель — соберу персону.",
+                "Готово! Подписка подтверждена. Напишите кратко про продукт и целевую аудиторию",
             )
         else:
             await safe_edit_text(
@@ -214,7 +214,7 @@ def setup_handlers(config: Config, cache: SubscriptionCache, llm: LLMClient) -> 
         if ok:
             await safe_edit_text(
                 cb,
-                "Готово! Подписка подтверждена. Напишите кратко про продукт/нишу, ЦА и цель — соберу персону.",
+                "Готово! Подписка подтверждена. Напишите кратко про продукт и целевую аудиторию",
                 reply_markup=None,
             )
             await state.set_state(Form.waiting_for_brief)
@@ -243,6 +243,15 @@ def setup_handlers(config: Config, cache: SubscriptionCache, llm: LLMClient) -> 
 
         _append_history(user_id, "assistant", result_md)
         await respond_with_chunks(message, result_md)
+        
+        # Send follow-up message with creator platform link
+        await message.answer(
+            "🚀 Отлично! У вас есть портрет клиента.\n\n"
+            "Теперь вы можете провести интервью с персоной, проанализировать рынок, "
+            "сформировать оффер, создать план запуска MVP и ответить на все оставшиеся "
+            "вопросы о бизнесе на платформе Креатор: https://app.create-products.com/"
+        )
+        
         await state.set_state(Form.chatting)
 
     @router.message(Form.chatting, F.text)

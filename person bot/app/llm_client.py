@@ -41,8 +41,8 @@ class LLMClient:
             self._log.info("LLMClient: using OpenAI model=%s", self._config.OPENAI_MODEL)
             raw = await self._generate_via_openai(history)
             return self._clean_response(raw)
-        self._log.warning("LLMClient: no LLM configured, returning demo persona")
-        return self._clean_response(self._demo_persona())
+        self._log.warning("LLMClient: no LLM configured, returning empty response")
+        return self._clean_response("")
 
     async def _generate_via_openai(self, history: List[HistoryItem]) -> str:
         assert self._openai_client is not None
@@ -85,7 +85,7 @@ class LLMClient:
             return ""
         except Exception as e:
             self._log.error("OpenAI generation failed: %s", e)
-            return self._demo_persona()
+            return ""
 
     async def _generate_via_gemini(self, history: List[HistoryItem]) -> str:
         # google-generativeai SDK синхронный; выполним в отдельном потоке
@@ -130,7 +130,7 @@ class LLMClient:
         import asyncio
 
         text = await asyncio.to_thread(_compose)
-        return text or self._demo_persona()
+        return text or ""
 
     def _clean_response(self, text: str) -> str:
         """Удаляет символы # и * из ответа LLM"""
@@ -151,47 +151,4 @@ class LLMClient:
             else:
                 lines.append(line)
         return "\n".join(lines)
-
-    def _demo_persona(self) -> str:
-        return (
-            "Анна, руководитель маркетинга\n\n"
-            "Роль/должность: Head of Marketing\n"
-            "Отрасль/сегмент: B2B SaaS\n"
-            "Размер компании/уровень: средняя компания, 50–200 сотрудников\n"
-            "Регион: Россия\n\n"
-            "Базовый профиль:\n"
-            "Возраст/стаж: 32 года, 8 лет в маркетинге\n"
-            "Ключевые задачи по работе: лидогенерация, воронка, бренд\n"
-            "Контекст использования продукта: ищет повышение конверсии и аналитику\n"
-            "Каналы информации/медиа: Телеграм, vc.ru, профильные чаты\n\n"
-            "Психографический портрет:\n"
-            "Ценности и отношение к рискам: прагматизм, осторожные эксперименты\n"
-            "Стиль принятия решений: гипотезы → тест → метрики\n"
-            "Триггеры внимания: кейсы с цифрами, отзывы из РФ\n"
-            "Возражения и опасения: долгое внедрение, скрытые расходы\n\n"
-            "Проблематика и боли:\n"
-            "1) Низкая конверсия MQL → SQL\n"
-            "2) Слабая атрибуция каналов\n"
-            "3) Нехватка ресурсов на контент\n\n"
-            "Мотивация и триггеры:\n"
-            "Ключевая цель: рост SQL и демо-заявок\n"
-            "Что станет моментом действия: быстрый пилот с ростом CTR\n"
-            "Социальное доказательство (какое работает): кейсы с рынком РФ\n\n"
-            "Путь к покупке (этапы):\n"
-            "1) Осознание проблемы → падение лидов\n"
-            "2) Исследование решений → сравнение инструментов\n"
-            "3) Сравнение поставщиков → запрос демо\n"
-            "4) Пробный период/демо → пилот на 2 недели\n"
-            "5) Покупка/внедрение → интеграция и обучение\n\n"
-            "Сообщения и офферы:\n"
-            "Главный месседж (одно предложение): Увеличьте SQL на 20% за месяц без лишних затрат.\n"
-            "Альтернативные месседжи (2–3 шт.): Повышаем CTR в рекламе; Чёткая атрибуция; Кейсы с рынка РФ.\n"
-            "Оффер/лид-магнит: бесплатный аудит воронки и 10 гипотез\n"
-            "Каналы и форматы (топ-3): Telegram, поисковая реклама, вебинары\n\n"
-            "Контент-идеи (3–5 шт.):\n"
-            "Чек-лист атрибуции; кейсы с цифрами; вебинар по гипотезам.\n\n"
-            "Метрики успеха:\n"
-            "Первичные (конверсия из визита в лид, CTR и т. п.): рост CTR, CR\n"
-            "Вторичные (демо-запросы, удержание и т. п.): число демо, удержание\n"
-        )
 
